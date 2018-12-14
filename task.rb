@@ -18,7 +18,7 @@ end
 
 class InuDog
   def initialize
-    ToriBird.create if ToriBird.all.size.zero?
+    ToriBird.create(etag: nil, event_id: nil, access_token: nil) if ToriBird.all.size.zero?
     @tori_bird = ToriBird.first
     @commits = []
     @etag = @tori_bird.etag
