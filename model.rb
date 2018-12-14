@@ -6,7 +6,8 @@ class ToriBird
   include DataMapper::Resource
   property :id, Serial
   property :etag, String, :length => 256, :required => false
-  property :push_event_id, Integer, :required => true
+  property :event_id, Integer, :required => false
+  property :access_token, String, :length => 256, :required => false
 end
 
 DataMapper.finalize
