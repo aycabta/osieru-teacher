@@ -55,8 +55,10 @@ class InuDog
       when '200'
         if @new_etag.nil? and res['ETag'] != @tori_bird.etag
           @new_etag = res['ETag']
+          puts "new ETag: #{@new_etag}"
         end
       when '304' # Not Modified
+        puts '304 Not Modified'
         return nil
       else # unknown
         return nil
@@ -64,7 +66,10 @@ class InuDog
       events = JSON.parse(res.body)
       events.each do |e|
         event_id = e['id'].to_i
-        return nil if event_id == @latest_event_id
+        if event_id == @latest_event_id
+          puts 'reached latest event_id'
+          return nil
+        end
         @new_latest_event_id = event_id unless @new_latest_event_id
         if e['type'] == 'PushEvent'
           commits = e.fetch('payload')&.fetch('commits')
@@ -98,6 +103,7 @@ class InuDog
   end
 
   def whine(commit)
+    puts "Say about #{commit['sha']}"
     uri = URI.parse(ENV['SLACK_WEBHOOK_URL'])
     payload = {
       'text' =>
