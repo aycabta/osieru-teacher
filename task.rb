@@ -28,6 +28,7 @@ class InuDog
   end
 
   def hand
+    # https://developer.github.com/v3/activity/events/
     (1..10).each do |page|
       res = bow(page)
       break unless res
@@ -81,6 +82,7 @@ class InuDog
   end
 
   def wow(commit_overview)
+    # https://developer.github.com/v3/activity/events/types/#pushevent
     puts "commit: #{commit_overview['sha']}"
     sleep 2
     uri = URI.parse(commit_overview['url'])
@@ -103,6 +105,7 @@ class InuDog
   end
 
   def whine(commit)
+    # https://api.slack.com/incoming-webhooks
     puts "Say about #{commit['sha']}"
     uri = URI.parse(ENV['SLACK_WEBHOOK_URL'])
     payload = {
