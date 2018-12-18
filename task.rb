@@ -9,7 +9,12 @@ when 'production'
   DataMapper.setup(:default, ENV['DATABASE_URL'])
   database_upgrade!
 when 'test', 'development'
-  DataMapper.setup(:default, 'yaml:///tmp/osieru-teacher')
+  if ENV['DATABASE_URL']
+    # 'postgres://aycabta@localhost:5432/osieru-teacher'
+    DataMapper.setup(:default, ENV['DATABASE_URL'])
+  else
+    DataMapper.setup(:default, 'yaml:///tmp/osieru-teacher')
+  end
   database_upgrade!
 else
   DataMapper.setup(:default, 'yaml:///tmp/osieru-teacher')
