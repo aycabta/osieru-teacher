@@ -25,7 +25,7 @@ class InuDog
   def initialize
     ToriBird.create(etag: nil, event_id: nil, access_token: nil) if ToriBird.all.size.zero?
     @tori_bird = ToriBird.first
-    @commits = []
+    @hits = []
     @etag = @tori_bird.etag
     @new_etag = nil
     @latest_event_id = @tori_bird.event_id
@@ -40,8 +40,8 @@ class InuDog
     end
     @tori_bird.update(etag: @new_etag) if @new_etag
     @tori_bird.update(event_id: @new_latest_event_id) if @new_latest_event_id
-    @commits.reverse_each do |commit|
-      whine(commit)
+    @hits.reverse_each do |hit|
+      whine(hit)
     end
   end
 
@@ -99,23 +99,43 @@ class InuDog
       req['Authorization'] = "token #{@tori_bird.access_token}"
       res = https.request(req)
       commit = JSON.parse(res.body)
-      commit['files'].each do |file|
-        if file['filename'].include?('rdoc')
-          puts "related commit found: #{commit_overview['sha']}"
-          @commits << commit
-          return
-        end
+      spree_digging(commit)
+    end
+  end
+
+  def spree_digging(commit)
+    EteMonkey.all.each do |em|
+      if dig(commit, em)
+        @hits << {
+          em: em,
+          commit: commit
+        }
       end
     end
   end
 
-  def whine(commit)
+  def dig(commit, em)
+    em.bananas.each do |banana|
+      commit['files'].each do |file|
+        path = file['filename']
+        if Regexp.new(banana.regexp_for_path).match?(path)
+          puts "related commit found: #{commit['sha']} for #{em.gem_name}"
+          return true
+        end
+      end
+    end
+    false
+  end
+
+  def whine(hit)
     # https://api.slack.com/incoming-webhooks
-    puts "Say about #{commit['sha']}"
-    uri = URI.parse(ENV['SLACK_WEBHOOK_URL'])
+    commit = hit[:commit]
+    em = hit[:em]
+    puts "Say about #{commit['sha']} with #{em.gem_name}"
+    uri = URI.parse(em.slack_webhook_url)
     payload = {
       'text' =>
-      "RDoc changes:\n" +
+      "#{em.gem_name} changes:\n" +
       "https://github.com/ruby/ruby/commit/#{commit['sha']}\n" +
       commit['files'].map{ |f| f['filename'] }.join("\n")
     }
