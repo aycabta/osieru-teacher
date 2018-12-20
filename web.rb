@@ -8,7 +8,11 @@ configure :production do
 end
 
 configure :test, :development do
-  DataMapper.setup(:default, 'yaml:///tmp/osieru-teacher')
+  if ENV['DATABASE_URL']
+    DataMapper.setup(:default, ENV['DATABASE_URL'])
+  else
+    DataMapper.setup(:default, 'yaml:///tmp/osieru-teacher')
+  end
   database_upgrade!
 end
 
