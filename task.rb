@@ -8,7 +8,7 @@ case ENV['RACK_ENV']
 when 'production'
   DataMapper.setup(:default, ENV['DATABASE_URL'])
   database_upgrade!
-when 'test', 'development'
+when 'test', 'development', nil
   if ENV['DATABASE_URL']
     # 'postgres://aycabta@localhost:5432/osieru-teacher'
     DataMapper.setup(:default, ENV['DATABASE_URL'])
