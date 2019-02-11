@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.5.2)
+    addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
     data_objects (0.10.17)
       addressable (~> 2.1)
@@ -42,7 +42,7 @@ DEPENDENCIES
   sinatra
 
 RUBY VERSION
-   ruby 2.6.0p0
+   ruby 2.6.1p33
 
 BUNDLED WITH
    1.17.2
