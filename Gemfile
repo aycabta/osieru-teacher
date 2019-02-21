@@ -5,7 +5,6 @@ gem 'dm-migrations'
 
 group :development, :test do
   gem 'dm-yaml-adapter'
-  gem 'dm-postgres-adapter'
 end
 
 group :production do
